@@ -1,44 +1,54 @@
 import numpy as np
+import math
 
-# Sample data
-# x represents some feature, y is the target
-x = np.array([1, 2, 3, 4, 5])
-y = np.array([2, 4, 6, 8, 10])
+class gradient_descent:
+    #linear regression -> the forumla is y = w0 + w1*x1 + w2*x2 + ... + wn*xn with n being the number of features
 
-# Initial guess for w1
-w1 = 10
+    def __init__(self):
+        # Number of iterations
+        self.epoch = 1000  # depending on epoch, parameters and training data, we will choose between stochastic, mini-batch or batch gradient descent
 
-# Learning rate
-alpha = 0.01
+        # Initial guess for weights
+        self.weights = None
 
+        # Learning rate
+        self.alpha = 0.0001
 
-# Function to compute the Residual Sum of Squares (RSS)
-def compute_rss(w1, x, y):
-    predictions = w1 * x
-    return np.sum((y - predictions) ** 2)
+    # Function to compute the Residual Sum of Squares (RSS)
+    # Sigma (yj - (w0*1 + w1*x1j + w2*x2j + ... + wn*xnj))^2 for j = 1 to m with m being the training set
+    def compute_rss(self, x, y):
+        predictions = np.sum(self.weights * x,axis=1)
+        return np.sum(np.square(y - predictions))
 
+    # Function to compute the derivative of RSS with respect to whe single weights
+    # gradient can be computed via chain rule
+    # gradient of wn = -2 * xnj * (yj - (w0*1 + w1*x1j + w2*x2j + ... + wn*xnj)) for j = 1 to m with m being the training set
+    def derivative_rss(self, x, y):
+        y = y.reshape(-1)
+        predictions = np.sum(self.weights * x,axis=1)
+        errors = y - predictions
+        steps = -2 * x * errors[:, np.newaxis]
+        return np.sum(steps,axis=0)
 
-# Function to compute the derivative of RSS with respect to w1
-def derivative_rss_w1(w1, x, y):
-    predictions = w1 * x
-    errors = y - predictions
-    return -2 * np.sum(errors * x)
+    def fit(self, x_train, y_train):
+        self.weights = np.random.randint(1, 3, size=np.shape(x_train)[1])
+        #self.weights = np.zeros(np.shape(x_train)[1])
+        y_train = y_train.to_numpy()
 
+        # Gradient Descent Algorithm
+        for i in range(self.epoch):
+            # Calculate the gradient of the cost function
+            step = self.derivative_rss(x_train, y_train)
 
-# Number of iterations
-iterations = 100
+            # Update weights
+            self.weights = self.weights - (self.alpha * step)
 
-# Gradient Descent Algorithm
-for i in range(iterations):
-    # Calculate the gradient of the cost function
-    grad = derivative_rss_w1(w1, x, y)
+            # Optionally print the cost every 10 iterations
+            if i % 10 == 0:
+                rss = self.compute_rss(x_train, y_train)
+                #print(f"Iteration {i+1}: weights = {self.weights}, RSS = {rss}")
 
-    # Update w1
-    w1 = w1 - alpha * grad
+        print(f"Final model with following weights for w0 ... wn:{self.weights}")
 
-    # Optionally print the cost every 10 iterations
-    if i % 10 == 0:
-        rss = compute_rss(w1, x, y)
-        print(f"Iteration {i}: w1 = {w1}, RSS = {rss}")
-
-print(f"Final model: y = {w1} * x")
+    def predict(self, x_test):
+        return np.sum(self.weights * x_test,axis=1)
