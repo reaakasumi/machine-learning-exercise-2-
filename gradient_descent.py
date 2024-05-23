@@ -6,7 +6,7 @@ class gradient_descent:
 
     def __init__(self):
         # Number of iterations
-        self.epoch = 1000  # depending on epoch, parameters and training data, we will choose between stochastic, mini-batch or batch gradient descent
+        self.epoch = 10000  # depending on epoch, parameters and training data, we will choose between stochastic, mini-batch or batch gradient descent
 
         # Initial guess for weights
         self.weights = None
@@ -31,7 +31,7 @@ class gradient_descent:
         return np.sum(steps,axis=0)
 
     def fit(self, x_train, y_train):
-        self.weights = np.random.randint(1, 3, size=np.shape(x_train)[1])
+        self.weights = np.random.randint(1, 101, size=np.shape(x_train)[1])
         #self.weights = np.zeros(np.shape(x_train)[1])
         y_train = y_train.to_numpy()
 

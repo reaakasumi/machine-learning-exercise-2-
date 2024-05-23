@@ -1,8 +1,6 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn import preprocessing
-import matplotlib.pyplot as plt
-import numpy as np
+from sklearn.linear_model import SGDRegressor
 from gradient_descent import gradient_descent
 from sklearn.preprocessing import MinMaxScaler
 
@@ -25,16 +23,11 @@ pred = model.predict(X_test)
 result = pd.DataFrame({'Actual': y_test.values.flatten(), 'Predicted': pred.flatten()})
 print(result)
 
-#header = df.columns.tolist()
-#print(header)
-#df_scaled = preprocessing.MinMaxScaler().fit_transform(df.values)
-# dataset = pd.DataFrame(df_scaled, columns=header)
+# Using sklearn
+sk_model = SGDRegressor()
+sk_model.fit(X_train,y_train)
+sk_model_pred = sk_model.predict(X_test)
+sk_result = pd.DataFrame({'Actual': y_test.values.flatten(), 'Predicted': sk_model_pred.flatten()})
+print(sk_result)
 
-#
-# not_important = []
-# for i in range(1, len(header)):
-#     data = dataset[header[i]]
-#     if (max(data) == min(data)):
-#         not_important.append(header[i])
-#
-# dataset.drop(not_important, axis=1, inplace=True)
+#result -> both are similar!
