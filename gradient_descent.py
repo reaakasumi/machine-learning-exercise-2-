@@ -60,6 +60,7 @@ class GradientDescent:
 
     def fit(self, x_train, y_train):
         self.weights = np.random.randn(x_train.shape[1])
+        print(f"Initial weights: {self.weights}")
         for i in range(self.epochs):
             step = self.derivative_rss(x_train, y_train) / len(x_train)
             self.weights = self.weights - self.alpha * step
@@ -74,12 +75,17 @@ class GradientDescent:
 # Prepare data with intercept term for GradientDescent
 x_scaled_intercept = np.c_[np.ones(x_scaled.shape[0]), x_scaled]
 
-# Initialize and fit custom gradient descent model
-gd_model = GradientDescent(learning_rate=0.01, epochs=1000)
-gd_model.fit(x_scaled_intercept, y)
+# Experiment with different learning rates
+learning_rates = [0.001, 0.01, 0.1]
+results = {}
+colors = ['blue', 'orange', 'purple']
 
-# Predictions for plotting
-y_pred_custom_gd = gd_model.predict(x_scaled_intercept)
+for lr, color in zip(learning_rates, colors):
+    print(f"\nTraining with learning rate: {lr}")
+    gd_model = GradientDescent(learning_rate=lr, epochs=1000)
+    gd_model.fit(x_scaled_intercept, y)
+    y_pred_custom_gd = gd_model.predict(x_scaled_intercept)
+    results[lr] = (y_pred_custom_gd, color)
 
 # Using scikit-learn's SGDRegressor for comparison
 sgd_regressor = SGDRegressor(max_iter=1000, tol=1e-3, eta0=0.01, learning_rate='constant', random_state=42)
@@ -90,10 +96,11 @@ y_pred_sgd = sgd_regressor.predict(x_scaled)
 
 # Plotting the results
 plt.scatter(x_scaled, y_train, color='blue', label='Actual Data')
-plt.plot(x_scaled, y_pred_custom_gd, color='red', label='Custom GD Prediction')
+for lr, (y_pred, color) in results.items():
+    plt.plot(x_scaled, y_pred, color=color, label=f'Custom GD Prediction (lr={lr})')
 plt.plot(x_scaled, y_pred_sgd, color='green', label='SGD Prediction')
 plt.xlabel('Scaled Number of Workers')
 plt.ylabel('Actual Productivity')
-plt.title('Fit of Linear Model using Gradient Descent')
+plt.title('Fit of Linear Model using Gradient Descent with Different Learning Rates')
 plt.legend()
 plt.show()
