@@ -8,7 +8,7 @@ class gradient_descent:
         # Number of iterations
         self.epoch = 10000  # depending on epoch, parameters and training data, we will choose between stochastic, mini-batch or batch gradient descent
 
-        # Initial guess for weights
+        # Initial guess for weights (will be set in fit method)
         self.weights = None
 
         # Learning rate
@@ -31,6 +31,7 @@ class gradient_descent:
         return np.sum(steps,axis=0)
 
     def fit(self, x_train, y_train):
+        x_train[::, 0] = 1.
         self.weights = np.random.randint(1, 101, size=np.shape(x_train)[1])
         #self.weights = np.zeros(np.shape(x_train)[1])
         y_train = y_train.to_numpy()
@@ -42,11 +43,6 @@ class gradient_descent:
 
             # Update weights
             self.weights = self.weights - (self.alpha * step)
-
-            # Optionally print the cost every 10 iterations
-            if i % 10 == 0:
-                rss = self.compute_rss(x_train, y_train)
-                #print(f"Iteration {i+1}: weights = {self.weights}, RSS = {rss}")
 
         print(f"Final model with following weights for w0 ... wn:{self.weights}")
 
