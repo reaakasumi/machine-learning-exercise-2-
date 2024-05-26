@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import KFold
 from sklearn.linear_model import SGDRegressor
@@ -41,11 +42,10 @@ features['Extracurricular Activities'] = features['Extracurricular Activities'].
 scalar = MinMaxScaler()
 features = scalar.fit_transform(features)
 
-
 X_train, X_test, y_train, y_test = train_test_split(features, target, test_size=0.25, random_state=2)
 
-X_train_minmax = X_train
-X_test_minmax = X_test
+X_train_minmax = scalar.fit_transform(X_train)
+X_test_minmax = scalar.fit_transform(X_test)
 """
 ## KNN
 
@@ -65,10 +65,62 @@ result = pd.DataFrame({'Actual': y_test.values.flatten(), 'sk-learn': sk_model_p
 print(result)
 """
 
+
+"""
+
+learning_rates = [0.000001, 0.00001]
+learning_rates2 = [0.000001, 0.00001, 0.0001, 0.001, 0.01]
+
+lr_rmse = []
+lr_mse = []
+
+sklearn_gd_eval = get_evaluation(SGDRegressor(), features, target) #default learning rate 0.0001
+lr_mse.append(sklearn_gd_eval[0])
+lr_rmse.append(sklearn_gd_eval[1])
+
+for lr in learning_rates:
+    custom_gd_eval = get_evaluation(gradient_descent(lr, 1000), features, target)
+    lr_mse.append(custom_gd_eval[0])
+    lr_rmse.append(custom_gd_eval[1])
+
+lr_mse.append(100000)
+lr_rmse.append(100000)
+lr_mse.append(100000)
+lr_rmse.append(100000)
+lr_mse.append(100000)
+lr_rmse.append(100000)
+
+
+variables = ['SGDRegressor', '0.000001', '0.0000001', '0.0001', '0.001', '0.01']
+
+# Positions of the bars on the x-axis
+bar_width = 0.35  # Width of the bars
+index = np.arange(len(variables))  # The label locations
+
+# Plotting the bar chart
+fig, ax = plt.subplots()
+ax.set_ylim(0, 25)
+bars1 = ax.bar(index, lr_mse, bar_width, label='Mean Squared Error')
+bars2 = ax.bar(index + bar_width, lr_rmse, bar_width, label='Root Mean Squared Error')
+
+# Adding labels, title, and custom x-axis tick labels
+ax.set_xlabel('Learning Rates')
+ax.set_ylabel('performance')
+ax.set_title('Performance of different learning rates for Gradient Descent (epochs = 1000)')
+ax.set_xticks(index + bar_width / 2)
+ax.set_xticklabels(variables)
+ax.legend()
+
+# Display the chart
+plt.show()
+
+
+"""
+
 ## Gradient Descent - Linear Regression
 
 # Using custom gradient descent
-model = gradient_descent(0.0001, 1000)
+model = gradient_descent(0.00001, 1000)
 model.fit(X_train_minmax,y_train)
 pred = model.predict(X_test_minmax)
 
@@ -102,12 +154,5 @@ print("DECISION TREE REGRESSOR")
 
 custom_dtr_eval = get_evaluation(DecisionTreeRegressor(), features, target)
 print(custom_dtr_eval)
-
-"""
-custom_knn_eval = get_evaluation(custom_knn(11, 1), features, target)
-sklearn_knn_eval = get_evaluation(KNeighborsRegressor(n_neighbors=11), features, target)
-print(custom_knn_eval)
-print(sklearn_knn_eval)
-"""
 
 #result -> both are similar!

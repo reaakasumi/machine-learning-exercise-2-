@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-import sys
+import random
 
 class gradient_descent:
     #linear regression -> the forumla is y = w0 + w1*x1 + w2*x2 + ... + wn*xn with n being the number of features
@@ -48,7 +48,7 @@ class gradient_descent:
 
         # Gradient Descent Algorithm
         for i in range(self.epoch):
-            #batch_index = np.array(random.sample(range(1, np.shape(x_train)[0]), 200))
+            #batch_index = np.array(random.sample(range(1, np.shape(x_train)[0]), 1))
             # Calculate the gradient of the cost function
             #step = self.derivative_rss(x_train[batch_index], y_train[batch_index])
             step = self.derivative_rss(x_train, y_train)
