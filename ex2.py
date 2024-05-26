@@ -4,6 +4,7 @@ from sklearn.linear_model import SGDRegressor
 from gradient_descent import gradient_descent
 from simp_knn import custom_knn
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.neighbors import KNeighborsRegressor
 
 #preprocessing
 df = pd.read_csv("Student_Performance.csv").head(100)
@@ -19,10 +20,18 @@ features = scalar.fit_transform(features)
 X_train, X_test, y_train, y_test = train_test_split(features, target, test_size=0.25, random_state=2)
 
 model = custom_knn()
-model.fit(X_train,y_train, 2)
+model.fit(X_train,y_train, 5)
 
 pred = model.predict(X_test, 3)
 sk_result = pd.DataFrame({'Actual': y_test.values.flatten(), 'Predicted': pred.flatten()})
+print(sk_result)
+
+
+# Using sklearn
+sk_model = KNeighborsRegressor(n_neighbors=5, metric='manhattan')
+sk_model.fit(X_train,y_train)
+sk_model_pred = sk_model.predict(X_test)
+sk_result = pd.DataFrame({'Actual': y_test.values.flatten(), 'Predicted': sk_model_pred.flatten()})
 print(sk_result)
 """ 
 model = gradient_descent()

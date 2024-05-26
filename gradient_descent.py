@@ -1,5 +1,4 @@
 import numpy as np
-import math
 
 class gradient_descent:
     #linear regression -> the forumla is y = w0 + w1*x1 + w2*x2 + ... + wn*xn with n being the number of features

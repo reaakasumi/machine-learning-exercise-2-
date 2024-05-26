@@ -3,7 +3,6 @@ from sklearn.metrics.pairwise import euclidean_distances
 from sklearn.metrics.pairwise import cosine_distances
 from sklearn.metrics.pairwise import manhattan_distances
 
-
 class custom_knn:
     def __init__(self):
         self.k = None
