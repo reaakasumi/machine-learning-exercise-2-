@@ -37,9 +37,14 @@ class gradient_descent:
             x_train = x_train_input.to_numpy()
         else:
             x_train = x_train_input
-        self.weights = np.random.randint(1, 101, size=np.shape(x_train)[1])
+
+        if isinstance(y_train_input, pd.DataFrame) == True:
+            y_train = y_train_input.to_numpy()
+        else:
+            y_train = y_train_input
+
+        self.weights = np.random.randint(1, 11, size=np.shape(x_train)[1])
         #self.weights = np.zeros(np.shape(x_train)[1])
-        y_train = y_train_input.to_numpy()
 
         # Gradient Descent Algorithm
         for i in range(self.epoch):
