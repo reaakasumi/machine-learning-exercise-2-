@@ -8,6 +8,7 @@ from simp_knn import custom_knn
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error, root_mean_squared_error
 from sklearn.neighbors import KNeighborsRegressor
+from sklearn.tree import DecisionTreeRegressor
 
 def get_evaluation(model, features, target):
     kf = KFold(n_splits=10)
@@ -96,6 +97,11 @@ for k in neighbors:
     print(f"K = {k}")
     print(custom_knn_eval)
     print(sklearn_knn_eval)
+
+print("DECISION TREE REGRESSOR")
+
+custom_dtr_eval = get_evaluation(DecisionTreeRegressor(), features, target)
+print(custom_dtr_eval)
 
 """
 custom_knn_eval = get_evaluation(custom_knn(11, 1), features, target)
