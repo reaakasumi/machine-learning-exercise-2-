@@ -1,4 +1,5 @@
 import numpy as np
+import random
 
 class gradient_descent:
     #linear regression -> the forumla is y = w0 + w1*x1 + w2*x2 + ... + wn*xn with n being the number of features
@@ -11,7 +12,7 @@ class gradient_descent:
         self.weights = None
 
         # Learning rate
-        self.alpha = 0.0001
+        self.alpha = 0.001
 
     # Function to compute the Residual Sum of Squares (RSS)
     # Sigma (yj - (w0*1 + w1*x1j + w2*x2j + ... + wn*xnj))^2 for j = 1 to m with m being the training set
@@ -31,14 +32,15 @@ class gradient_descent:
 
     def fit(self, x_train, y_train):
         x_train[::, 0] = 1.
-        self.weights = np.random.randint(1, 101, size=np.shape(x_train)[1])
-        #self.weights = np.zeros(np.shape(x_train)[1])
+        #self.weights = np.random.randint(1, 101, size=np.shape(x_train)[1])
+        self.weights = np.zeros(np.shape(x_train)[1])
         y_train = y_train.to_numpy()
 
         # Gradient Descent Algorithm
         for i in range(self.epoch):
+            batch_index = np.array(random.sample(range(1, np.shape(x_train)[0]), 200))
             # Calculate the gradient of the cost function
-            step = self.derivative_rss(x_train, y_train)
+            step = self.derivative_rss(x_train[batch_index], y_train[batch_index])
 
             # Update weights
             self.weights = self.weights - (self.alpha * step)
