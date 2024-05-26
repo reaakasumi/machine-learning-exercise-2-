@@ -1,5 +1,6 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
+from sklearn.model_selection import KFold
 from sklearn.linear_model import SGDRegressor
 from gradient_descent import gradient_descent
 from simp_knn import custom_knn
@@ -12,12 +13,14 @@ features = df. loc[:, df. columns != "Performance Index"]
 target = df. loc[:, df. columns == "Performance Index"]
 features['Extracurricular Activities'] = features['Extracurricular Activities'].map({'Yes': 1, 'No': 0})
 
+scalar = MinMaxScaler()
+features = scalar.fit_transform(features)
+
+
 X_train, X_test, y_train, y_test = train_test_split(features, target, test_size=0.25, random_state=2)
 
-scalar = MinMaxScaler()
-X_train_minmax = scalar.fit_transform(X_train)
-X_test_minmax = scalar.transform(X_test)
-
+X_train_minmax = X_train
+X_test_minmax = X_test
 """
 ## KNN
 
@@ -40,16 +43,19 @@ print(result)
 ## Gradient Descent - Linear Regression
 
 # Using custom gradient descent
-model = gradient_descent()
+model = gradient_descent(0.00001, 10000)
 model.fit(X_train_minmax,y_train)
 pred = model.predict(X_test_minmax)
 
+X_train_2, X_test_2, y_train_2, y_test_2 = train_test_split(features, target, test_size=0.25, random_state=2)
 # Using sklearn
 sk_model = SGDRegressor()
-sk_model.fit(X_train_minmax,y_train)
-sk_model_pred = sk_model.predict(X_test_minmax)
+sk_model.fit(X_train_2,y_train_2)
+sk_model_pred = sk_model.predict(X_test_2)
 
 result = pd.DataFrame({'Actual': y_test.values.flatten(), 'sk-learn': sk_model_pred.flatten(), "Custom": pred.flatten()})
 print(result)
+print(sk_model.coef_)
+print(model.get_weights())
 
 #result -> both are similar!
