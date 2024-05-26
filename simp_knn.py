@@ -27,24 +27,20 @@ class custom_knn:
             self.y_train = y_train_input
 
     def predict(self, x_test):
-        result = np.array([])
-        print(x_test.shape)
-        print(x_test[0])
+        result = np.zeros((x_test.shape[0], 1))
 
         for i in range(x_test.shape[0]):
-            np.append(result, self._predict_single([x_test[i]], self.distance_metric))
+            result[i] = self._predict_single(x_test[i], self.distance_metric)
 
         return result
 
     def _predict_single(self, x_test, distance_metric):
-        #print("ADASDAS")
-        #print(x_test)
         if distance_metric == 1:
-            distances = euclidean_distances(x_test, self.x_train)
+            distances = euclidean_distances([x_test], self.x_train)
         elif distance_metric == 2:
-            distances = cosine_distances(x_test, self.x_train)
+            distances = cosine_distances([x_test], self.x_train)
         elif distance_metric == 3:
-            distances = manhattan_distances(x_test, self.x_train)
+            distances = manhattan_distances([x_test], self.x_train)
         else:
             print("Invalid distance metric")
             return

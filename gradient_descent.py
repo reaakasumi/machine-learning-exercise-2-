@@ -43,7 +43,7 @@ class gradient_descent:
         else:
             y_train = y_train_input
 
-        self.weights = np.random.randint(1, 11, size=np.shape(x_train)[1])
+        self.weights = np.random.randint(0, 101, size=np.shape(x_train)[1])
         #self.weights = np.zeros(np.shape(x_train)[1])
 
         # Gradient Descent Algorithm

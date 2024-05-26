@@ -22,7 +22,7 @@ def get_evaluation(model, features, target):
 
         mse.append(mean_squared_error(y_test.flatten(), pred))
         rmse.append(root_mean_squared_error(y_test.flatten(), pred))
-        correlation_matrix = np.corrcoef(np.array(y_test.flatten()), np.array(pred))
+        correlation_matrix = np.corrcoef(np.array(y_test.flatten()), np.array(pred.flatten()))
         corr.append(correlation_matrix[0, 1])
 
     mse = sum(mse) / len(mse)
@@ -67,7 +67,7 @@ print(result)
 ## Gradient Descent - Linear Regression
 
 # Using custom gradient descent
-model = gradient_descent(0.00001, 10000)
+model = gradient_descent(0.0001, 1000)
 model.fit(X_train_minmax,y_train)
 pred = model.predict(X_test_minmax)
 
@@ -79,20 +79,29 @@ sk_model_pred = sk_model.predict(X_test_2)
 
 result = pd.DataFrame({'Actual': y_test.values.flatten(), 'sk-learn': sk_model_pred.flatten(), "Custom": pred.flatten()})
 print(result)
+print("sklearn weights")
 print(sk_model.coef_)
-print(model.get_weights())
 
-
-
-
-"""
 print("GRADIENT DESCENT")
 custom_gd_eval = get_evaluation(gradient_descent(0.00001, 1000), features, target)
 sklearn_gd_eval = get_evaluation(SGDRegressor(), features, target)
-"""
-print("KNN")
-custom_knn_eval = get_evaluation(custom_knn(11), features, target)
-sklearn_knn_eval = get_evaluation(KNeighborsRegressor(n_neighbors=11), features, target)
+print(custom_gd_eval)
+print(sklearn_gd_eval)
 
+print("KNN")
+neighbors = [1, 3, 7, 11, 15, 21]
+for k in neighbors:
+    custom_knn_eval = get_evaluation(custom_knn(k, 1), features, target)
+    sklearn_knn_eval = get_evaluation(KNeighborsRegressor(n_neighbors=k), features, target)
+    print(f"K = {k}")
+    print(custom_knn_eval)
+    print(sklearn_knn_eval)
+
+"""
+custom_knn_eval = get_evaluation(custom_knn(11, 1), features, target)
+sklearn_knn_eval = get_evaluation(KNeighborsRegressor(n_neighbors=11), features, target)
+print(custom_knn_eval)
+print(sklearn_knn_eval)
+"""
 
 #result -> both are similar!
